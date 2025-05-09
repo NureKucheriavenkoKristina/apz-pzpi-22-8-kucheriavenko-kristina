@@ -212,20 +212,18 @@ d_i=x_i-x ̅,
 
 
  
-Рисунок Б.1 – UML діаграма розгортання
+Рисунок Б.1 — ER-діаграма даних
 
- 
-Рисунок Б.2 – UML діаграма прецедентів
- 
-Рисунок Б.3 – ER-модель даних
+Рисунок Б.2 — Структура бази даних
 
- 
+Рисунок Б.3 — UML-діаграма прецедентів
+
 Рисунок Б.4 – UML діаграма взаємодії
  
 Додаток В
 Програмний код
 
-	В.1 Математична обробка прикладних даних
+В.1 Математична обробка прикладних даних
 GitHub репозиторій: https://github.com/NureKucheriavenkoKristina/apz-pzpi-22-8-kucheriavenko-kristina/blob/main/Lab2/pzpi-22-8-kucheriavenko-kristina-lab2/service/StorageConditionService.java
 
 1. private String logMessage(StorageCondition condition, String creator) {
@@ -262,7 +260,7 @@ GitHub репозиторій: https://github.com/NureKucheriavenkoKristina/apz-
 32.     return averagesMap;
 33. }
 
-В.2 Резервне копіювання користувацьких даних (кожен день о 4:00)
+В.2 Резервне копіювання користувацьких даних
 GitHub репозиторій: https://github.com/NureKucheriavenkoKristina/apz-pzpi-22-8-kucheriavenko-kristina/blob/main/Lab2/pzpi-22-8-kucheriavenko-kristina-lab2/config/BackupService.java
 
 1. @Service
@@ -466,7 +464,7 @@ GitHub репозиторій: https://github.com/NureKucheriavenkoKristina/apz-
 89. }
 
 
-В.5 Сервіс «Донор»
+В.5 Адміністрування бізнес-логіки системи
 GitHub репозиторій: https://github.com/NureKucheriavenkoKristina/apz-pzpi-22-8-kucheriavenko-kristina/blob/main/Lab2/pzpi-22-8-kucheriavenko-kristina-lab2/service/DonorService.java
 
 1. @Service
