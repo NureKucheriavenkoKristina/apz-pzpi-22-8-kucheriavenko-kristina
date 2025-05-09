@@ -232,7 +232,7 @@ d_i=x_i-x ̅,
 Програмний код
 
 	В.1 Математична обробка прикладних даних
-Репозиторій: https://github.com/NureKucheriavenkoKristina/apz-pzpi-22-8-kucheriavenko-kristina/blob/main/Lab2/pzpi-22-8-kucheriavenko-kristina-lab2/service/StorageConditionService.java
+GitHub репозиторій: https://github.com/NureKucheriavenkoKristina/apz-pzpi-22-8-kucheriavenko-kristina/blob/main/Lab2/pzpi-22-8-kucheriavenko-kristina-lab2/service/StorageConditionService.java
 
 1. private String logMessage(StorageCondition condition, String creator) {
 2.     Map<String, Double> averages = calculateAverageValues(condition.getMaterialID().getMaterialID());
@@ -269,7 +269,7 @@ d_i=x_i-x ̅,
 33. }
 
 В.2 Резервне копіювання користувацьких даних (кожен день о 4:00)
-Репозиторій: https://github.com/NureKucheriavenkoKristina/apz-pzpi-22-8-kucheriavenko-kristina/blob/main/Lab2/pzpi-22-8-kucheriavenko-kristina-lab2/config/BackupService.java
+GitHub репозиторій: https://github.com/NureKucheriavenkoKristina/apz-pzpi-22-8-kucheriavenko-kristina/blob/main/Lab2/pzpi-22-8-kucheriavenko-kristina-lab2/config/BackupService.java
 
 1. @Service
 2. public class BackupService {
@@ -332,7 +332,7 @@ d_i=x_i-x ̅,
 59. }
 
 В.3 Модель «Донор»
-Репозиторій:
+GitHub репозиторій: https://github.com/NureKucheriavenkoKristina/apz-pzpi-22-8-kucheriavenko-kristina/blob/main/Lab2/pzpi-22-8-kucheriavenko-kristina-lab2/model/Donor.java
 1. @Entity
 2. @Table(name = "donors")
 3. @Getter
@@ -379,7 +379,7 @@ d_i=x_i-x ̅,
 44. }
 
 В.4 Контролер «Донор»
-Репозиторій: https://github.com/NureKucheriavenkoKristina/apz-pzpi-22-8-kucheriavenko-kristina/blob/main/Lab2/pzpi-22-8-kucheriavenko-kristina-lab2/controllers/DonorController.java
+GitHub репозиторій: https://github.com/NureKucheriavenkoKristina/apz-pzpi-22-8-kucheriavenko-kristina/blob/main/Lab2/pzpi-22-8-kucheriavenko-kristina-lab2/controllers/DonorController.java
 
 1. @RestController
 2. @RequiredArgsConstructor
@@ -473,7 +473,7 @@ d_i=x_i-x ̅,
 
 
 В.5 Сервіс «Донор»
-Репозиторій: https://github.com/NureKucheriavenkoKristina/apz-pzpi-22-8-kucheriavenko-kristina/blob/main/Lab2/pzpi-22-8-kucheriavenko-kristina-lab2/service/DonorService.java
+GitHub репозиторій: https://github.com/NureKucheriavenkoKristina/apz-pzpi-22-8-kucheriavenko-kristina/blob/main/Lab2/pzpi-22-8-kucheriavenko-kristina-lab2/service/DonorService.java
 
 1. @Service
 2. @RequiredArgsConstructor
