@@ -1,64 +1,91 @@
 package com.BiologicalMaterialsSystem.service;
 
+import com.BiologicalMaterialsSystem.enums.StorageZone;
 import com.BiologicalMaterialsSystem.model.*;
+import com.BiologicalMaterialsSystem.repository.NotificationRepository;
 import com.BiologicalMaterialsSystem.repository.StorageConditionRepository;
-import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
 public class StorageConditionService {
+
     private final StorageConditionRepository repository;
+    private final NotificationRepository notificationRepository;
     private final EventLogService eventLogService;
+    private final BiologicalMaterialService biologicalMaterialService;
 
     public void createCondition(User user, StorageCondition condition) {
+        processCondition(condition);
         repository.save(condition);
-        String logMessage = logMessage(condition, "admin with ID " + user.getUserID());
+        String logMessage = logMessage(condition, "User with ID " + user.getUserID() + ". Add new ");
         eventLogService.logAction(user, logMessage);
     }
 
     public void createCondition(StorageCondition condition) {
+        processCondition(condition);
         repository.save(condition);
         String logMessage = logMessage(condition, "IOT");
         eventLogService.logAction(null, logMessage);
     }
 
-    private String logMessage(StorageCondition condition, String creator) {
-        Map<String, Double> averages = calculateAverageValues(condition.getMaterialID().getMaterialID());
-        double temperatureDeviation = condition.getTemperature() - averages.getOrDefault("avgTemperature", 0.0);
-        double oxygenLevelDeviation = condition.getOxygenLevel() - averages.getOrDefault("avgOxygenLevel", 0.0);
-        double humidityDeviation = condition.getHumidity() - averages.getOrDefault("avgHumidity", 0.0);
+    private void processCondition(StorageCondition condition) {
+        BiologicalMaterial material = biologicalMaterialService.getBiologicalMaterialById(condition.getMaterialID().getMaterialID());
 
+        double score = calculateEnvironmentScore(condition);
+        StorageZone zone = determineZone(score);
+
+        condition.setZone(zone);
+        condition.setMeasurementTime(new Date());
+
+        if (zone != StorageZone.GREEN) {
+            Notification notification = new Notification();
+            notification.setEventType("Hazardous storage conditions");
+            notification.setDetails("Material in the zone: " + zone.name());
+            notification.setNotificationTime(new Date());
+            notification.setMaterialID(material);
+            notificationRepository.save(notification);
+        }
+    }
+
+    private String logMessage(StorageCondition condition, String creator) {
         return String.format(
-                "Added new storage condition by %s and material with ID: %d | " +
-                        "Averages - Temperature: %.2f°C (Deviation: %.2f°C), " +
-                        "Oxygen Level: %.2f%% (Deviation: %.2f%%), " +
-                        "Humidity: %.2f%% (Deviation: %.2f%%)",
+                "storage condition by %s and material with ID: %d | " +
+                        "Zone: %s, " +
+                        "Oxygen Level: %.2f%%, " +
+                        "Humidity: %.2f%%, " +
+                        "Temperature: %.2f°C",
                 creator,
-                condition.getRecordID(),
-                averages.getOrDefault("avgTemperature", 0.0),
-                temperatureDeviation,
-                averages.getOrDefault("avgOxygenLevel", 0.0),
-                oxygenLevelDeviation,
-                averages.getOrDefault("avgHumidity", 0.0),
-                humidityDeviation
+                condition.getMaterialID().getMaterialID(),
+                condition.getZone(),
+                condition.getOxygenLevel(),
+                condition.getHumidity(),
+                condition.getTemperature()
         );
     }
 
-    public Map<String, Double> calculateAverageValues(Long materialId) {
-        List<Object[]> averages = repository.findAverageValuesByMaterialId(materialId);
-        Map<String, Double> averagesMap = new HashMap<>();
-        if (averages != null && !averages.isEmpty()) {
-            Object[] avgValues = averages.get(0);
-            averagesMap.put("avgTemperature", (Double) avgValues[0]);
-            averagesMap.put("avgOxygenLevel", (Double) avgValues[1]);
-            averagesMap.put("avgHumidity", (Double) avgValues[2]);
-        }
-        return averagesMap;
+    public double calculateEnvironmentScore(StorageCondition condition) {
+        BiologicalMaterial material = biologicalMaterialService.getBiologicalMaterialById(condition.getMaterialID().getMaterialID());
+
+        double idealTemp = material.getIdealTemperature();
+        double idealHumidity = material.getIdealHumidity();
+        double idealOxygen = material.getIdealOxygenLevel();
+
+        double normTemp = 1 - Math.abs((condition.getTemperature() - idealTemp) / 10.0);
+        double normHumidity = 1 - Math.abs((condition.getHumidity() - idealHumidity) / 100.0);
+        double normOxygen = 1 - Math.abs((condition.getOxygenLevel() - idealOxygen) / 100.0);
+
+        return (normTemp * 0.5 + normHumidity * 0.3 + normOxygen * 0.2);
+    }
+
+    public StorageZone determineZone(double score) {
+        if (score < 0.3) return StorageZone.RED;
+        if (score < 0.7) return StorageZone.YELLOW;
+        return StorageZone.GREEN;
     }
 
     public StorageCondition getConditionById(Long id) {
@@ -72,60 +99,20 @@ public class StorageConditionService {
 
     public void updateCondition(User user, Long id, StorageCondition newCondition) {
         StorageCondition condition = getConditionById(id);
-
-        Map<String, Double> averages = calculateAverageValues(newCondition.getMaterialID().getMaterialID());
-        double temperatureDeviation = newCondition.getTemperature() - averages.getOrDefault("avgTemperature", 0.0);
-        double oxygenLevelDeviation = newCondition.getOxygenLevel() - averages.getOrDefault("avgOxygenLevel", 0.0);
-        double humidityDeviation = newCondition.getHumidity() - averages.getOrDefault("avgHumidity", 0.0);
-
         condition.setTemperature(newCondition.getTemperature());
-        condition.setOxygenLevel(newCondition.getOxygenLevel());
         condition.setHumidity(newCondition.getHumidity());
-        condition.setMeasurementTime(newCondition.getMeasurementTime());
+        condition.setOxygenLevel(newCondition.getOxygenLevel());
         condition.setMaterialID(newCondition.getMaterialID());
+        processCondition(condition);
         repository.save(condition);
-
-        String logMessage = String.format(
-                "Updated storage condition with ID: %d | " +
-                        "Averages - Temperature: %.2f°C (Deviation: %.2f°C), " +
-                        "Oxygen Level: %.2f%% (Deviation: %.2f%%), " +
-                        "Humidity: %.2f%% (Deviation: %.2f%%)",
-                condition.getRecordID(),
-                averages.getOrDefault("avgTemperature", 0.0),
-                temperatureDeviation,
-                averages.getOrDefault("avgOxygenLevel", 0.0),
-                oxygenLevelDeviation,
-                averages.getOrDefault("avgHumidity", 0.0),
-                humidityDeviation
-        );
-
+        String logMessage = logMessage(condition, "User with ID " + user.getUserID() + ". Update ");
         eventLogService.logAction(user, logMessage);
     }
 
     public void deleteCondition(User user, Long id) {
         StorageCondition condition = getConditionById(id);
-
-        Map<String, Double> averages = calculateAverageValues(condition.getMaterialID().getMaterialID());
-        double temperatureDeviation = condition.getTemperature() - averages.getOrDefault("avgTemperature", 0.0);
-        double oxygenLevelDeviation = condition.getOxygenLevel() - averages.getOrDefault("avgOxygenLevel", 0.0);
-        double humidityDeviation = condition.getHumidity() - averages.getOrDefault("avgHumidity", 0.0);
-
-        String logMessage = String.format(
-                "Deleted storage condition with ID: %d | " +
-                        "Averages - Temperature: %.2f°C (Deviation: %.2f°C), " +
-                        "Oxygen Level: %.2f%% (Deviation: %.2f%%), " +
-                        "Humidity: %.2f%% (Deviation: %.2f%%)",
-                condition.getRecordID(),
-                averages.getOrDefault("avgTemperature", 0.0),
-                temperatureDeviation,
-                averages.getOrDefault("avgOxygenLevel", 0.0),
-                oxygenLevelDeviation,
-                averages.getOrDefault("avgHumidity", 0.0),
-                humidityDeviation
-        );
-
-        eventLogService.logAction(user, logMessage);
         repository.deleteById(id);
+        String logMessage = logMessage(condition, "User with ID " + user.getUserID() + ". Delete ");
+        eventLogService.logAction(user, logMessage);
     }
-
 }
