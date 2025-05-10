@@ -8,24 +8,24 @@
 
 
 
-Лабораторна робота 
+Лабораторна робота
 з дисципліни: «Архітектура програмного забезпечення»
-на тему: «Розробка програмної архітектури, створення та відлагодження програмного коду серверної частини програмної системи»
+на тему: Розробка програмної архітектури, створення та відлагодження програмного коду серверної частини програмної системи»
  
 
 
 
-										Виконала: 	
-										ст. гр. ПЗПІ-22-8	
-										Кучерявенко К. Р.
-										3 травня 2025 р.
-										Перевірив:
-										Ст. викл. Сокорчук І. П.
-                                                			
+									Виконала: 	
+									ст. гр. ПЗПІ-22-8	
+									Кучерявенко К. Р.
+									3 травня 2025 р.
+									Перевірив:						 						Ст. викл. Сокорчук І. П.
+
+                                                					
+
 
 
 Харків 2025
-
 2 РОЗРОБКА ПРОГРАМНОЇ АРХІТЕКТУРИ, СТВОРЕННЯ ТА
 ВІДЛАГОДЖЕННЯ ПРОГРАМНОГО КОДУ СЕРВЕРНОЇ ЧАСТИНИ
 ПРОГРАМНОЇ СИСТЕМИ
@@ -40,10 +40,10 @@
 2	03.05.25	0.1	Створено розділ «Завдання»
 3	03.05.25	0.1	Створено розділ «Опис виконаної роботи»
 4	03.05.25	0.1	Створено розділ «Висновки»
-5	03.05.25	0.1	Додано додаток А з посиланням на відеоролик
-6	03.05.25	0.1	Додано додаток Б з графічними матеріалами
-7	03.05.25	0.1	Додано додаток В з програмним кодом
-8	03.05.25	0.1	Додано додаток Г з специфікацію REST
+5	10.05.25	0.1	Додано додаток А з посиланням на відеоролик
+6	10.05.25	0.1	Додано додаток Б з графічними матеріалами
+7	10.05.25	0.1	Додано додаток В з програмним кодом
+8	10.05.25	0.1	Додано додаток Г з специфікацію REST
 
 
 2.2 Завдання
@@ -70,13 +70,23 @@
 –	модуль умов зберігання: визначення температурного режиму, вологості, строків тощо;
 –	модуль користувачів: реєстрація, авторизація, призначення ролей та керування доступом.
 Завдяки гнучкості архітектури та модульному підходу система легко масштабується, підтримує розширення функціональності, а також спрощує супровід і тестування. Кожен з модулів є ізольованим з погляду логіки, але може взаємодіяти з іншими через сервісний рівень.
-Математичні методи обробки даних використовуються під час логування змін у таблиці з умовами зберігання. При отриманні даних про температуру, вологість та кисень, система підраховує середнє значення всіх показників за цим матеріалом і відхилення останнього показника від середнього значення. Це надає змогу контролювати стан матеріалу та вчасно відкоригувати його умови зберігання. 
-Формула для середнього значення: 
-x ̅=1/n ∑_(l ̇=1)^n▒x_i ,
-де x ̅ – середнє значення, x_i –  кожне значення в наборі даних, n – кількість елементів у наборі даних.
-Формула відхилення останнього показника від середнього значення:
-d_i=x_i-x ̅,
-де d_i – відхилення i-го елемента від середнього значення, x_i –  останнє значення показника, x ̅ – середнє значення.
+	Математичні методи обробки даних використовуються під час аналізу умов зберігання матеріалів. При отриманні даних про температуру, вологість та кисень, система розраховує показники, що характеризують відповідність цих значень до ідеальних умов зберігання. Для цього визначаються нормалізовані відхилення для кожного з параметрів на основі ідеальних значень. Нормалізація здійснюється за допомогою формул нормалізації температури (1), нормалізації вологості (2), нормалізації рівня кисню (3). Формула для температури:
+normHumidity=1-((humidity-idealHumidity)/10)				(1)
+де humidity – фактична температура матеріалу, яка вимірюється в процесі зберігання, 
+	idealHumidity – ідеальна температура зберігання матеріалу, задана для кожного матеріалу окремо.
+Формула визначає відхилення фактичного рівня вологості від ідеального. Якщо вологість матеріалу збігається з ідеальною, значення T_n буде 1.0. Відхилення більше, ніж на 100% від ідеалу, знижує значення. Формула для вологості:
+normOxygen=1-((oxygenLevel-idealOxygenLeve)/100)				(1)
+де oxygenLevel – фактичний рівень кисню в оточенні матеріалу, 
+	idealOxygenLevel – ідеальний рівень кисню для зберігання матеріалу.
+Аналогічно попередній формулі, ця формула визначає відхилення фактичного рівня кисню від ідеального, нормалізуючи його до значення в межах 0 – 1. Значення normOxygen буде максимальним, якщо рівень кисню відповідає ідеальному. Формула для рівня кисню:
+normOxygen=1-((oxygenLevel-idealOxygenLevel)/100)				(1)
+де oxygenLevel – фактичний рівень кисню в оточенні матеріалу, 
+	idealOxygenLevel – ідеальний рівень кисню для зберігання матеріалу.
+Аналогічно попереднім формулам, ця формула визначає відхилення фактичного рівня кисню від ідеального, нормалізуючи його до значення в межах 0 – 1. Значення normOxygen буде максимальним, якщо рівень кисню відповідає ідеальному.
+Для отримання загальний стан умов зберігання матеріалу, враховуючи всі три параметри: температуру, вологість і рівень кисню, використовується формула загального балу (4). Кожному з параметрів присвоєна вага: 50% для температури, 30% для вологості і 20% для рівня кисню. Це дає змогу більше впливати на загальний результат параметрам, що є критичнішими для зберігання. Результат може бути в діапазоні від 0 (незадовільні умови зберігання) до 1 (ідеальні умови зберігання). Формула:
+environmentScore=(normTemp×0.5+normHumidity×0.3+normOxygen×0.2)	(4)
+де normTemp, normHumidity, normOxygen – розраховуються з вищезгаданих формул.
+Ці формули дозволяють контролювати стан матеріалу в реальному часі, виявляючи відхилення від ідеальних умов зберігання, і вчасно коригувати параметри зберігання.
 База даних проєкту реалізована у системі керування базами даних PostgreSQL та побудована відповідно до предметної області управління біологічними матеріалами. Вона включає сім основних таблиць, які відповідають основним модулям системи. Для кожної таблиці чітко визначено атрибути, типи даних, зв’язки з іншими таблицями, а також умови заповнення полів та обмеження цілісності даних. Нижче подано опис основних таблиць та їхніх полів.
 Таблиця BiologicalMaterials:
 –	materialID унікальний ідентифікатор запису, генерується автоматично;
@@ -84,7 +94,10 @@ d_i=x_i-x ̅,
 –	expirationDate обов’язкове поле, дата має бути у майбутньому;
 –	status обов’язкове поле, перелічуваний тип даних, значення, окрім визначених у переліку, не дозволяються;
 –	transferDate обов’язкове поле, дата, яка має бути у минулому або сьогоденні;
-–	donorID обов’язкове поле, зв’язок з таблицею Donors, не може бути пустим.
+–	donorID обов’язкове поле, зв’язок з таблицею Donors, не може бути пустим;
+–	idealTemperature обов’язкове поле, числове значення у межах від -100 до 100;
+–	 idealOxygenLevel обов’язкове поле, числове значення у межах від 0 до 100;
+–	idealHumidity обов’язкове поле, числове значення у межах від 0 до 100.
 Таблиця Donors:
 –	donorID унікальний ідентифікатор донора, генерується автоматично;
 –	firstName обов’язкове поле, рядок довжиною від 2 до 100 символів, не може бути пустим;
@@ -101,24 +114,16 @@ d_i=x_i-x ̅,
 –	creatorID обов’язкове поле, зв’язок з таблицею Users, не може бути пустим.
 Таблиця Notifications:
 –	notificationID унікальний ідентифікатор запису, генерується автоматично;
-–	eventTime обов’язкове поле, дата має бути у минулому або сьогоденні;
 –	eventType обов’язкове поле, рядок довжиною від 2 до 100 символів, не може бути пустим;
 –	details обов’язкове поле, рядок довжиною від 5 до 500 символів, не може бути пустим;
-–	status обов’язкове поле, рядок довжиною від 2 до 50 символів, не може бути пустим;
 –	materialID обов’язкове поле, зв’язок з таблицею BiologicalMaterials, не може бути пустим.
-Таблиця Reports:
-–	reportID унікальний ідентифікатор запису, генерується автоматично;
-–	reportType обов’язкове поле, рядок довжиною від 2 до 100 символів, не може бути пустим;
-–	creationDate обов’язкове поле, дата, яка має бути у минулому або сьогоденні;
-–	text обов’язкове поле, рядок довжиною від 5 до 1000 символів, не може бути пустим;
-–	fileLink обов’язкове поле, унікальний рядок довжиною від 5 до 500 символів, не може бути пустим;
-–	eventLogID обов’язкове поле, зв’язок з таблицею EventLogs, не може бути пустим.
 Таблиця StorageCondition:
 –	recordID унікальний ідентифікатор запису, генерується автоматично;
 –	temperature обов’язкове поле, числове значення у межах від -100 до 100;
 –	oxygenLevel обов’язкове поле, числове значення у межах від 0 до 100;
 –	humidity обов’язкове поле, числове значення у межах від 0 до 100;
 –	measurementTime обов’язкове поле,  дата має бути у минулому або сьогоденні;
+–	zone перелічуваний тип даних, не може бути пустим;
 –	materialID обов’язкове поле, зв’язок з таблицею BiologicalMaterials, не може бути пустим.
 Таблиця Users:
 –	userID унікальний ідентифікатор запису, генерується автоматично;
@@ -137,18 +142,17 @@ d_i=x_i-x ̅,
 Репозиторії (@Repository, інтерфейси, що наслідують JpaRepository) – відповідають за взаємодію з базою даних. Для кожної сутності створено окремий репозиторій.
 Сутності (@Entity) – кожна таблиця в базі даних має відповідну модель у вигляді Java-класу з анотаціями (@Column, @NotNull, @Pattern, @Enumerated тощо), які описують правила зберігання та валідації даних.
 Валідація даних – за допомогою jakarta.validation (@Valid, @NotBlank, @Size, @Past, @Future, @Pattern) забезпечується перевірка вхідних даних до обробки логіки.
-Функціональне тестування проводилося з використанням Postman –популярного інструменту для роботи з API-запитами. Основні етапи тестування включали запуск локального сервера Spring Boot (localhost:8080), імпорт колекції запитів Postman для кожного з ресурсів (/donors, /materials, /reports, тощо), перевірка коректності CRUD-операцій, тестування валідації, тестування зв’язків між таблицями та унікальності. 
+Функціональне тестування проводилося з використанням Postman –популярного інструменту для роботи з API-запитами. Основні етапи тестування включали запуск локального сервера Spring Boot (localhost:8080), імпорт колекції запитів Postman для кожного з ресурсів (/donors, /materials, /reports, тощо), перевірка коректності CRUD-операцій, тестування валідації, тестування зв’язків між таблицями та унікальності. У додатку Б розташовані графічні матеріали, а саме:  UML діаграма розгортання (Deployment Diagram), UML діаграма прецедентів (Use Case Diagram), ER-модель даних (Entity–Relationship Model), UML діаграма взаємодії (Interaction Overview Diagram). Приклад фрагментів коду знаходиться у додатку В. Специфікація REST розташована у додатку Г.
 
 
 2.4 Висновки 
 
 
 	У ході виконаної роботи було успішно реалізовано серверну частину інформаційної системи управління біологічними матеріалами, яка базується на багаторівневій архітектурі з чітким розподілом відповідальностей між компонентами. Система забезпечує надійне зберігання, обробку та контроль біоматеріалів, а також підтримує диференційований доступ для користувачів з різними ролями. Завдяки використанню фреймворку Spring Boot, ORM Spring Data JPA та бази даних PostgreSQL досягнуто високої продуктивності, гнучкості й масштабованості. Особливу увагу приділено модульності системи, логуванню дій, аналітиці умов зберігання за допомогою математичних методів та стандартизованому REST API для інтеграції з іншими сервісами. Таким чином, створена програмна система є надійною платформою для подальшого розвитку, інтеграції та розширення функціональних можливостей. 
-
 Додаток А
-ВІДЕОЗАПИС
+	Хронологічний опис та посилання
 
-Відеозапис доповіді на YouTube: https://youtu.be/VWnLnIFwC6k
+Відеозапис доповіді на YouTube: https://youtu.be/ibaqjx_JtD8
 
 Хронологічний опис доповіді:
 00:00 Вступна частина
@@ -181,21 +185,14 @@ d_i=x_i-x ̅,
 –	отримання всіх записів сповіщень через GET-запит;
 –	оновлення з перевіркою коректності даних через PUT-запит із перевіркою ролі користувача;
 –	видалення через DELETE-запит із перевіркою ролі користувача.
-03:15 Тестування: звіти
-Показано тестування API для звітів:
-–	створення через POST-запит із валідацією користувача;
-–	отримання одного звіту по ID через GET-запит;
-–	отримання всіх звітів через GET-запит;
-–	оновлення з перевіркою коректності даних через PUT-запит із перевіркою ролі користувача;
-–	видалення через DELETE-запит із перевіркою ролі користувача.
-03:59 Тестування: умови зберігання
+03:15 Тестування: умови зберігання
 Показано тестування API для умов зберігання:
 –	створення через POST-запит із валідацією користувача із перевіркою ролі користувача;
 –	отримання одного запису умов зберігання по ID через GET-запит;
 –	отримання всіх записів умов зберігання через GET-запит;
 –	оновлення з перевіркою коректності даних через PUT-запит із перевіркою ролі користувача;
 –	видалення через DELETE-запит із перевіркою ролі користувача.
-04:56 Тестування: користувачі
+04:13 Тестування: користувачі
 Показано тестування API для користувачів:
 –	створення через POST-запит звичайного користувача;
 –	створення через POST-запит користувача з певними правами доступу;
@@ -203,66 +200,55 @@ d_i=x_i-x ̅,
 –	отримання всіх користувачів через GET-запит;
 –	оновлення з перевіркою коректності даних через PUT-запит із перевіркою ролі користувача;;
 –	видалення через DELETE-запит із перевіркою ролі користувача.
-06:11 Тестування: автоматичне створення бекапу за розкладом
+05:28 Тестування: автоматичне створення бекапу за розкладом
 Перегляд папки «db» та відсутність в ній файлі. Відбувається запуск серверу. Продемонстровано автоматичне створення бекапу за розкладом «кожні 10 сек». В консолі виводиться текст про успішність (або помилку). Демонстрація папки «db» з щойно створеними бекапами бази даних. 
-
+06:07 Тестування: демонстрація математичних методи обробки даних
+Коротке пояснення як працює математична обробка даних, на що воно впливає. Відбувається створення нового запису для тестування, після чого відбувалось тестування розрахунку та результатів. Інформація про зони та що вони значать, при порушенні надсилається повідомлення, які було продемонстровано на екрані.
  
 Додаток Б
 Графічні матеріали
 
 
  
-Рисунок Б.1 — ER-діаграма даних
+Рисунок Б.1 – ER-діаграма даних
 
-Рисунок Б.2 — Структура бази даних
+ 
+Рисунок Б.2 – Структура бази даних
 
-Рисунок Б.3 — UML-діаграма прецедентів
+ 
+Рисунок Б.3 – UML-діаграма прецедентів
 
-Рисунок Б.4 – UML діаграма взаємодії
+ 
+Рисунок Б.4 – UML діаграма розгортання
+
  
 Додаток В
 Програмний код
 
 В.1 Математична обробка прикладних даних
 GitHub репозиторій: https://github.com/NureKucheriavenkoKristina/apz-pzpi-22-8-kucheriavenko-kristina/blob/main/Lab2/pzpi-22-8-kucheriavenko-kristina-lab2/service/StorageConditionService.java
-
-1. private String logMessage(StorageCondition condition, String creator) {
-2.     Map<String, Double> averages = calculateAverageValues(condition.getMaterialID().getMaterialID());
-3.     double temperatureDeviation = condition.getTemperature() - averages.getOrDefault("avgTemperature", 0.0);
-4.     double oxygenLevelDeviation = condition.getOxygenLevel() - averages.getOrDefault("avgOxygenLevel", 0.0);
-5.     double humidityDeviation = condition.getHumidity() - averages.getOrDefault("avgHumidity", 0.0);
-6. 
-7.     return String.format(
-8.             "Added new storage condition by %s and material with ID: %d | " +
-9.                     "Averages - Temperature: %.2f°C (Deviation: %.2f°C), " +
-10.                     "Oxygen Level: %.2f%% (Deviation: %.2f%%), " +
-11.                     "Humidity: %.2f%% (Deviation: %.2f%%)",
-12.             creator,
-13.             condition.getRecordID(),
-14.             averages.getOrDefault("avgTemperature", 0.0),
-15.             temperatureDeviation,
-16.             averages.getOrDefault("avgOxygenLevel", 0.0),
-17.             oxygenLevelDeviation,
-18.             averages.getOrDefault("avgHumidity", 0.0),
-19.             humidityDeviation
-20.     );
-21. }
-22. 
-23. public Map<String, Double> calculateAverageValues(Long materialId) {
-24.     List<Object[]> averages = repository.findAverageValuesByMaterialId(materialId);
-25.     Map<String, Double> averagesMap = new HashMap<>();
-26.     if (averages != null && !averages.isEmpty()) {
-27.         Object[] avgValues = averages.get(0);
-28.         averagesMap.put("avgTemperature", (Double) avgValues[0]);
-29.         averagesMap.put("avgOxygenLevel", (Double) avgValues[1]);
-30.         averagesMap.put("avgHumidity", (Double) avgValues[2]);
-31.     }
-32.     return averagesMap;
-33. }
+1. public double calculateEnvironmentScore(StorageCondition condition) {
+ 2.     BiologicalMaterial material = biologicalMaterialService.getBiologicalMaterialById(condition.getMaterialID().getMaterialID());
+ 3. 
+ 4.     double idealTemp = material.getIdealTemperature();
+ 5.     double idealHumidity = material.getIdealHumidity();
+ 6.     double idealOxygen = material.getIdealOxygenLevel();
+ 7. 
+ 8.     double normTemp = 1 - Math.abs((condition.getTemperature() - idealTemp) / 10.0);
+ 9.     double normHumidity = 1 - Math.abs((condition.getHumidity() - idealHumidity) / 100.0);
+10.     double normOxygen = 1 - Math.abs((condition.getOxygenLevel() - idealOxygen) / 100.0);
+11. 
+12.     return (normTemp * 0.5 + normHumidity * 0.3 + normOxygen * 0.2);
+13. }
+14. 
+15. public StorageZone determineZone(double score) {
+16.     if (score < 0.3) return StorageZone.RED;
+17.     if (score < 0.7) return StorageZone.YELLOW;
+18.     return StorageZone.GREEN;
+19. }
 
 В.2 Резервне копіювання користувацьких даних
 GitHub репозиторій: https://github.com/NureKucheriavenkoKristina/apz-pzpi-22-8-kucheriavenko-kristina/blob/main/Lab2/pzpi-22-8-kucheriavenko-kristina-lab2/config/BackupService.java
-
 1. @Service
 2. public class BackupService {
 3. 
@@ -271,7 +257,7 @@ GitHub репозиторій: https://github.com/NureKucheriavenkoKristina/apz-
 6.     @Value("${spring.datasource.password}")
 7.     private String password;
 8. 
-9.     @Scheduled(cron = "0 0 4 * * *")
+9.     @Scheduled(cron = "0 0 4 * * *")//кожен день о 04:00
 10.     public void performBackup() {
 11.         if (backupPath == null) {
 12.             System.err.println("Path is null");
@@ -323,202 +309,97 @@ GitHub репозиторій: https://github.com/NureKucheriavenkoKristina/apz-
 58.     }
 59. }
 
-В.3 Модель «Донор»
-GitHub репозиторій: https://github.com/NureKucheriavenkoKristina/apz-pzpi-22-8-kucheriavenko-kristina/blob/main/Lab2/pzpi-22-8-kucheriavenko-kristina-lab2/model/Donor.java
-1. @Entity
-2. @Table(name = "donors")
-3. @Getter
-4. @Setter
-5. public class Donor {
-6. 
-7.     @Id
-8.     @GeneratedValue(strategy = GenerationType.IDENTITY)
-9.     private Long donorID;
-10. 
-11.     @NotNull(message = "First name cannot be null")
-12.     @Size(min = 2, max = 100, message = "First name must be between 2 and 100 characters")
-13.     @Column(nullable = false)
-14.     private String firstName;
-15. 
-16.     @NotNull(message = "Last name cannot be null")
-17.     @Size(min = 2, max = 100, message = "Last name must be between 2 and 100 characters")
-18.     @Column(nullable = false)
-19.     private String lastName;
-20. 
-21.     @NotNull(message = "Birth date cannot be null")
-22.     @Past(message = "Birth date must be in the past")
-23.     @Column(nullable = false)
-24.     private Date birthDate;
-25. 
-26.     @NotNull(message = "Gender cannot be null")
-27.     @Enumerated(EnumType.STRING)
-28.     @Column(nullable = false)
-29.     private Gender gender;
-30. 
-31.     @NotNull(message = "ID number cannot be null")
-32.     @Pattern(regexp = "^[A-Za-z0-9]{10}$", message = "ID number must be 10 digits long")
-33.     @Column(nullable = false, unique = true)
-34.     private String idNumber;
-35. 
-36.     @NotNull(message = "Blood type cannot be null")
-37.     @Enumerated(EnumType.STRING)
-38.     @Column(nullable = false)
-39.     private RhFactorOfBlood bloodType;
-40. 
-41.     @Size(max = 500, message = "Transplant restrictions cannot exceed 500 characters")
-42.     @Column(nullable = false)
-43.     private String transplantRestrictions;
-44. }
-
-В.4 Контролер «Донор»
-GitHub репозиторій: https://github.com/NureKucheriavenkoKristina/apz-pzpi-22-8-kucheriavenko-kristina/blob/main/Lab2/pzpi-22-8-kucheriavenko-kristina-lab2/controllers/DonorController.java
-
-1. @RestController
-2. @RequiredArgsConstructor
-3. @RequestMapping("/api/donors")
-4. public class DonorController {
-5.     private final DonorService donorService;
-6.     private final UserService userService;
-7. 
-8.     @PostMapping("/admin/{userId}/add")
-9.     public ResponseEntity<Donor> createDonor(
-10.             @PathVariable("userId") Long userId,
-11.             @Valid @RequestBody Donor donor,
-12.             BindingResult result) {
-13. 
-14.         if (result.hasErrors()) {
-15.             return ResponseEntity.badRequest().body(null);
-16.         }
-17. 
-18.         User user = userService.getUserById(userId);
-19.         if (user == null) {
-20.             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-21.         }
-22. 
-23.         if (!userService.availabilityOfAction(userId)) {
-24.             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
-25.         }
-26. 
-27.         donorService.createDonor(user, donor);
-28. 
-29.         return ResponseEntity.ok(donor);
-30.     }
-31. 
-32.     @GetMapping("/{DonorID}")
-33.     public ResponseEntity<Donor> getDonorById(@PathVariable("DonorID") Long id) {
-34.         Donor donor = donorService.getDonorById(id);
-35.         if (donor == null) {
-36.             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-37.         }
-38.         return ResponseEntity.ok(donor);
+В.3 Адміністрування бізнес-логіки системи
+GitHub репозиторій: https://github.com/NureKucheriavenkoKristina/apz-pzpi-22-8-kucheriavenko-kristina/blob/main/Lab2/pzpi-22-8-kucheriavenko-kristina-lab2/controllers/BiologicalMaterialController.java
+1. package com.BiologicalMaterialsSystem.controllers;
+2.
+3. import java.util.List;
+4. import com.BiologicalMaterialsSystem.model.*;
+5. import com.BiologicalMaterialsSystem.service.*;
+6. import jakarta.validation.Valid;
+7. import lombok.RequiredArgsConstructor;
+8. import org.springframework.http.HttpStatus;
+9. import org.springframework.http.ResponseEntity;
+10. import org.springframework.validation.BindingResult;
+11. import org.springframework.web.bind.annotation.*;
+12.
+13. @RequiredArgsConstructor
+14. @RestController
+15. @RequestMapping("/api/biological-materials")
+16. @CrossOrigin(origins = "*")
+17. public class BiologicalMaterialController {
+18.
+19.     private final BiologicalMaterialService biologicalMaterialService;
+20.     private final UserService userService;
+21.
+22.     @PostMapping("/{userId}/add")
+23.     public ResponseEntity<BiologicalMaterial> createBiologicalMaterial(
+24.             @PathVariable("userId") Long userId,
+25.             @Valid @RequestBody BiologicalMaterial biologicalMaterial,
+26.             BindingResult result) {
+27.
+28.         if (result.hasErrors()) {
+29.             return ResponseEntity.badRequest().body(null);
+30.         }
+31.
+32.         User user = userService.getUserById(userId);
+33.         if (user == null) {
+34.             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+35.         }
+36.
+37.         biologicalMaterialService.createBiologicalMaterial(user, biologicalMaterial);
+38.         return ResponseEntity.ok(biologicalMaterial);
 39.     }
-40. 
-41.     @GetMapping
-42.     public ResponseEntity<List<Donor>> getAllDonors() {
-43.         return ResponseEntity.ok(donorService.getAllDonors());
-44.     }
-45. 
-46.     @PutMapping("/admin/{userId}/{DonorID}")
-47.     public ResponseEntity<Donor> updateDonor(
-48.             @PathVariable("userId") Long userId,
-49.             @PathVariable("DonorID") Long id,
-50.             @Valid @RequestBody Donor donor,
-51.             BindingResult result) {
-52. 
-53.         if (result.hasErrors()) {
-54.             return ResponseEntity.badRequest().body(null);
-55.         }
-56. 
-57.         User user = userService.getUserById(userId);
-58.         if (user == null) {
-59.             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-60.         }
-61. 
-62.         if (!userService.availabilityOfAction(userId)) {
-63.             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
-64.         }
-65. 
-66.         donorService.updateDonor(user, id, donor);
-67. 
-68.         return ResponseEntity.ok(donor);
-69.     }
-70. 
-71.     @DeleteMapping("/admin/{userId}/{id}")
-72.     public ResponseEntity<Void> deleteDonor(
-73.             @PathVariable("userId") Long userId,
-74.             @PathVariable("id") Long id) {
-75. 
-76.         User user = userService.getUserById(userId);
-77.         if (user == null) {
-78.             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-79.         }
-80. 
-81.         if (!userService.availabilityOfAction(userId)) {
-82.             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-83.         }
-84. 
-85.         donorService.deleteDonor(user, id);
-86. 
+40.
+41.     @GetMapping("/{materialID}")
+42.     public ResponseEntity<BiologicalMaterial> getBiologicalMaterialById(@PathVariable("materialID") Long materialID) {
+43.         BiologicalMaterial material = biologicalMaterialService.getBiologicalMaterialById(materialID);
+44.         if (material == null) {
+45.             return ResponseEntity.notFound().build();
+46.         }
+47.         return ResponseEntity.ok(material);
+48.     }
+49.
+50.     @GetMapping
+51.     public ResponseEntity<List<BiologicalMaterial>> getAllBiologicalMaterials() {
+52.         List<BiologicalMaterial> materials = biologicalMaterialService.getAllBiologicalMaterials();
+53.         return ResponseEntity.ok(materials);
+54.     }
+55.
+56.     @PutMapping("/{userId}/{materialID}")
+57.     public ResponseEntity<BiologicalMaterial> updateBiologicalMaterial(
+58.             @PathVariable("userId") Long userId,
+59.             @PathVariable("materialID") Long materialID,
+60.             @Valid @RequestBody BiologicalMaterial biologicalMaterial,
+61.             BindingResult result) {
+62.
+63.         if (result.hasErrors()) {
+64.             return ResponseEntity.badRequest().body(null);
+65.         }
+66.
+67.         User user = userService.getUserById(userId);
+68.         if (user == null) {
+69.             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+70.         }
+71.
+72.         BiologicalMaterial updatedMaterial = biologicalMaterialService.updateBiologicalMaterial(user, materialID, biologicalMaterial);
+73.         return ResponseEntity.ok(updatedMaterial);
+74.     }
+75.
+76.     @DeleteMapping("/admin/{userId}/{materialID}")
+77.     public ResponseEntity<Void> deleteBiologicalMaterial(
+78.             @PathVariable("userId") Long userId,
+79.             @PathVariable("materialID") Long materialID) {
+80.
+81.         User user = userService.getUserById(userId);
+82.         if (user == null) {
+83.             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+84.         }
+85.
+86.         biologicalMaterialService.deleteBiologicalMaterial(user, materialID);
 87.         return ResponseEntity.noContent().build();
 88.     }
-89. }
-
-
-В.5 Адміністрування бізнес-логіки системи
-GitHub репозиторій: https://github.com/NureKucheriavenkoKristina/apz-pzpi-22-8-kucheriavenko-kristina/blob/main/Lab2/pzpi-22-8-kucheriavenko-kristina-lab2/service/DonorService.java
-
-1. @Service
-2. @RequiredArgsConstructor
-3. public class DonorService {
-4.     private final DonorRepository donorRepository;
-5.     private final EventLogService eventLogService;
-6. 
-7.     public void createDonor(User user, Donor donor) {
-8.         donorRepository.save(donor);
-9.         eventLogService.logAction(user, "Added a new donor with an ID: " + donor.getDonorID());
-10.     }
-11. 
-12.     public Donor getDonorById(Long id) {
-13.         return donorRepository.findById(id)
-14.                 .orElseThrow(() -> new RuntimeException("Donor not found"));
-15.     }
-16. 
-17.     public List<Donor> getAllDonors() {
-18.         return donorRepository.findAll();
-19.     }
-20. 
-21.     public void updateDonor(User user, Long id, Donor newDonor) {
-22.         Donor donor = getDonorById(id);
-23.         donor.setFirstName(newDonor.getFirstName());
-24.         donor.setLastName(newDonor.getLastName());
-25.         donor.setBirthDate(newDonor.getBirthDate());
-26.         donor.setGender(newDonor.getGender());
-27.         donor.setIdNumber(newDonor.getIdNumber());
-28.         donor.setBloodType(newDonor.getBloodType());
-29.         donor.setTransplantRestrictions(newDonor.getTransplantRestrictions());
-30.         donorRepository.save(donor);
-31.         eventLogService.logAction(user, "Updated donor with an ID: " + donor.getDonorID());
-32.     }
-33. 
-34.     public void deleteDonor(User user, Long id) {
-35.         Long copyId = id;
-36.         donorRepository.deleteById(id);
-37.         eventLogService.logAction(user, "Deleted donor with an ID: " + copyId);
-38.     }
-39. }
-
-В.6 Репозиторій «Умови зберігання»
-Репозиторій: https://github.com/NureKucheriavenkoKristina/apz-pzpi-22-8-kucheriavenko-kristina/blob/main/Lab2/pzpi-22-8-kucheriavenko-kristina-lab2/repository/StorageConditionRepository.java
-
-1. @Repository
-2. public interface StorageConditionRepository extends JpaRepository<StorageCondition, Long> {
-3. 
-4.     @Query("SELECT AVG(sc.temperature), AVG(sc.oxygenLevel), AVG(sc.humidity) " +
-5.             "FROM StorageCondition sc " +
-6.             "WHERE sc.materialID.id = :materialId")
-7.     List<Object[]> findAverageValuesByMaterialId(Long materialId);
-8. }
- 
+89. } 
 Додаток Г
 Специфікація REST
 
@@ -548,8 +429,11 @@ Path:
 Body:
 - materialName (String): Назва біологічного матеріалу.
 - expirationDate (Date): Дата закінчення терміну придатності.
-- status (String): Статус донорства.
+- status (DonationStatus): Статус донорства.
 - transferDate (Date): Дата передачі матеріалу.
+- idealTemperature (double): Ідеальна температура зберігання.
+- idealOxygenLevel (double): Ідеальний рівень кисню.
+- idealHumidity (double): Ідеальна вологість.
 - donorID (Long): Ідентифікатор донора.
 
 #### Відповідь 
@@ -590,10 +474,6 @@ Path:
 
 Отримує всі біологічні матеріали.
 
-#### Параметри запиту
-Path:
-- materialID (Long): Ідентифікатор матеріалу.
-
 #### Відповідь 
 
 - 200 OK:
@@ -616,8 +496,11 @@ Path:
 Body:
 - materialName (String): Назва біологічного матеріалу.
 - expirationDate (Date): Дата закінчення терміну придатності.
-- status (String): Статус донорства.
+- status (DonationStatus): Статус донорства.
 - transferDate (Date): Дата передачі матеріалу.
+- idealTemperature (double): Ідеальна температура зберігання.
+- idealOxygenLevel (double): Ідеальний рівень кисню.
+- idealHumidity (double): Ідеальна вологість.
 - donorID (Long): Ідентифікатор донора.
 
 #### Відповідь 
@@ -789,6 +672,8 @@ Path:
 - userId (Long): Ідентифікатор адміністратора, що виконує дію.
   
 Body:
+- actionDetails (String): Деталі дії.
+- actionTime (Date): Час виконання дії.
 
 #### Відповідь 
 
@@ -909,10 +794,8 @@ Path:
 - userId (Long): Ідентифікатор адміністратора, що виконує дію.
   
 Body:
-- eventTime (Date): Час події.
 - eventType (String): Тип події.
 - details (String): Деталі сповіщення.
-- status (String): Статус сповіщення.
 - materialID (BiologicalMaterial): Біологічний матеріал, що пов'язаний зі сповіщенням.
 
 #### Відповідь 
@@ -972,10 +855,8 @@ Path:
 - id (Long): Ідентифікатор сповіщення, яке потрібно оновити.
   
 Body:
-- eventTime (Date): Час події.
 - eventType (String): Тип події.
 - details (String): Деталі сповіщення.
-- status (String): Статус сповіщення.
 - materialID (BiologicalMaterial): Біологічний матеріал, що пов'язаний зі сповіщенням.
 
 #### Відповідь 
@@ -1009,123 +890,6 @@ Path:
 - 404 Not Found:
   - message (String): Повідомлення про те, що сповіщення не знайдено.
 
-# ReportController API
-
-## Маршрути
-
-### Add Report
-
-**POST** '/api/reports/admin/{userId}/add'
-
-#### Опис
-
-Додає новий звіт від імені адміністратора.
-
-#### Параметри запиту
-Path:
-- userId (Long): Ідентифікатор адміністратора, що виконує дію.
-  
-Body:
-- reportType (String): Тип звіту.
-- creationDate (Date): Дата створення звіту.
-- text (String): Текст звіту.
-- fileLink (String): Посилання на файл звіту.
-- eventLogID (EventLog): Пов'язаний ідентифікатор журналу подій.
-
-#### Відповідь 
-
-- 200 OK:
-  - Report (object): Об'єкт створеного звіту.
-- 400 Bad Request:
-  - message (string): Повідомлення про помилку у вхідних даних.
-- 403 Forbidden:
-  - message (string): Відсутність дозволу на виконання дії.
-- 404 Not Found:
-  - message (string): Адміністратора не знайдено.
-
-### Get Report By ID
-
-**GET** '/api/reports/{id}'
-
-#### Опис
-
-Отримує звіт за його унікальним ідентифікатором.
-
-#### Параметри запиту
-Path:
-- id (Long): Ідентифікатор звіту.
-
-#### Відповідь 
-
-- 200 OK:
-  - Report (object): Звіт за вказаним ідентифікатором.
-- 404 Not Found:
-  - message (string): Повідомлення про те, що звіт не знайдено.
-
-### Get All Reports
-
-**GET** '/api/reports'
-
-#### Опис
-
-Отримує список усіх звітів.
-
-#### Відповідь 
-
-- 200 OK:
-  - List<Report> (Array): Список усіх звітів.
-
-### Update Report
-
-**PUT** '/api/reports/admin/{userId}/{id}'
-
-#### Опис
-
-Оновлює існуючий звіт від імені адміністратора.
-
-#### Параметри запиту
-Path:
-- userId (Long): Ідентифікатор адміністратора, що виконує дію.
-- id (Long): Ідентифікатор звіту, який потрібно оновити.
-  
-Body:
-- reportType (String): Тип звіту.
-- creationDate (Date): Дата створення звіту.
-- text (String): Текст звіту.
-- fileLink (String): Посилання на файл звіту.
-- eventLogID (EventLog): Пов'язаний ідентифікатор журналу подій.
-
-#### Відповідь 
-
-- 200 OK:
-  - Report (Object): Оновлений об'єкт звіту.
-- 400 Bad Request:
-  - message (String): Повідомлення про помилку у вхідних даних.
-- 403 Forbidden:
-  - message (String): Відсутність дозволу на виконання дії.
-- 404 Not Found:
-  - message (String): Повідомлення про те, що звіт не знайдено.
-
-### Delete Report
-
-**DELETE** '/api/reports/admin/{userId}/{id}'
-
-#### Опис
-
-Видаляє звіт від імені адміністратора.
-
-#### Параметри запиту
-Path:
-- userId (Long): Ідентифікатор адміністратора, що виконує дію.
-- id (Long): Ідентифікатор звіту, яке потрібно видалити.
-
-#### Відповідь 
-
-- 204 No Content:
-  - Видалення звіту відбулося успішно.
-- 404 Not Found:
-  - message (String): Повідомлення про те, що звіт не знайдено.
- 
 # StorageConditionController API
 
 ## Маршрути
@@ -1147,6 +911,7 @@ Body:
 - oxygenLevel (double): Рівень кисню.
 - humidity (double): Вологість.
 - measurementTime (Date): Час вимірювання.
+- zone (StorageZone): Зона зберігання.
 - materialID (BiologicalMaterial): Ідентифікатор біологічного матеріалу.
 
 #### Відповідь 
@@ -1210,6 +975,7 @@ Body:
 - oxygenLevel (double): Рівень кисню.
 - humidity (double): Вологість.
 - measurementTime (Date): Час вимірювання.
+- zone (StorageZone): Зона зберігання.
 - materialID (BiologicalMaterial): Ідентифікатор біологічного матеріалу.
 
 #### Відповідь 
@@ -1363,7 +1129,7 @@ Query:
 - 200 OK:
   - message (string): Повідомлення про успішний вихід "Вихід успішний".
  
-# Моделів даних
+# Моделі даних
 
 ## BiologicalMaterial
 Модель для біологічного матеріалу.
@@ -1373,6 +1139,9 @@ Query:
 - `expirationDate` - Дата закінчення терміну придатності біологічного матеріалу (має бути у майбутньому)
 - `status` - Статус пожертвування (потрібно вказати статус пожертвування: `AVAILABLE`, `COLLECTED`, `DONATED`, `PENDING` `DISPOSED` )
 - `transferDate` - Дата передачі матеріалу (має бути в минулому або поточному часі)
+- `idealTemperature` - Ідеальна температура зберігання
+- `idealOxygenLevel` - Ідеальний рівень кисню
+- `idealHumidity` - Ідеальна вологість
 - `donorID` - Ідентифікатор донора, що надав біологічний матеріал (не може бути порожнім)
 
 ## Donor
@@ -1398,20 +1167,9 @@ Query:
 ## Notification
 Модель для сповіщення про події в системі.
 - `notificationID` - Унікальний ідентифікатор сповіщення
-- `eventTime` - Час події (має бути в минулому або поточному часі)
 - `eventType` - Тип події (від 2 до 100 символів)
 - `details` - Опис події (від 5 до 500 символів)
-- `status` - Статус сповіщення (від 2 до 50 символів)
 - `materialID` - Ідентифікатор біологічного матеріалу, пов'язаного з подією (не може бути порожнім)
-
-## Report
-Модель для звіту в системі.
-- `reportID` - Унікальний ідентифікатор звіту
-- `reportType` - Тип звіту (від 2 до 100 символів)
-- `creationDate` - Дата створення звіту (має бути в минулому або поточному часі)
-- `text` - Текст звіту (від 5 до 1000 символів)
-- `fileLink` - Посилання на файл звіту (від 5 до 500 символів)
-- `eventLogID` - Ідентифікатор запису події, до якої прив'язаний звіт (не може бути порожнім)
 
 ## StorageCondition
 Модель для умов зберігання біологічного матеріалу.
@@ -1420,6 +1178,7 @@ Query:
 - `oxygenLevel` - Рівень кисню (від 0 до 100%, не може бути порожнім)
 - `humidity` - Вологість (від 0 до 100%, не може бути порожнім)
 - `measurementTime` - Час вимірювання (має бути в минулому або поточному часі)
+- `zone` - Зона зберігання (тип: StorageZone)
 - `materialID` - Ідентифікатор біологічного матеріалу, до якого відносяться умови зберігання (не може бути порожнім)
 
 ## User
