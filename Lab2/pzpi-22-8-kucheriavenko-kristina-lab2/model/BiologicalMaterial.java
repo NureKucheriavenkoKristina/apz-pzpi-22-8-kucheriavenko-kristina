@@ -36,6 +36,24 @@ public class BiologicalMaterial {
     @PastOrPresent(message = "Transfer date must be in the past or present")
     private Date transferDate;
 
+    @NotNull(message = "Temperature cannot be null")
+    @DecimalMin(value = "-100.0", message = "Temperature must be greater than or equal to -100")
+    @DecimalMax(value = "100.0", message = "Temperature must be less than or equal to 100")
+    @Column(nullable = false)
+    private double idealTemperature;
+
+    @NotNull(message = "Oxygen level cannot be null")
+    @DecimalMin(value = "0.0", message = "Oxygen level must be greater than or equal to 0")
+    @DecimalMax(value = "100.0", message = "Oxygen level must be less than or equal to 100")
+    @Column(nullable = false)
+    private double idealOxygenLevel;
+
+    @NotNull(message = "Humidity cannot be null")
+    @DecimalMin(value = "0.0", message = "Humidity must be greater than or equal to 0")
+    @DecimalMax(value = "100.0", message = "Humidity must be less than or equal to 100")
+    @Column(nullable = false)
+    private double idealHumidity;
+
     @ManyToOne
     @JoinColumn(name = "donorID")
     @NotNull(message = "Donor cannot be null")
