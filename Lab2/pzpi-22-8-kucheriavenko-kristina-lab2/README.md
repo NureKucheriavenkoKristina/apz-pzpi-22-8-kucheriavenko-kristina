@@ -23,8 +23,7 @@ git clone https://github.com/NureKucheriavenkoKristina/arkpz-pzpi-22-8-kucheriav
 
 ### Крок 2: Створення бази даних
 
-Створити базу даних з назвою "system-for-managing-medical-biological-materials". При першому запуску проєкту таблиці автоматично створяться в базі даних з вже існуючими записами в таблицях. Після чого треба видалити DatabaseBackupImporter.java, щоб не виконувати імпорт БД кожен раз при запуску системи. 
-Якщо ж потрібна пуста БД, то перед першим запуском необхідно видалити DatabaseBackupImporter.java. Таблиці автоматично створюються під час першого запуску.
+Створити базу даних з назвою "system-for-managing-medical-biological-materials". Таблиці автоматично створюються під час першого запуску.
 
 ### Крок 3: Запуск проекту
 
