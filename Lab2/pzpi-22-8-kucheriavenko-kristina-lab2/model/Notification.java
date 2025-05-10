@@ -16,13 +16,8 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long notificationID;
 
-    @NotNull(message = "Event time cannot be null")
-    @PastOrPresent(message = "Event time must be in the past or present")
-    @Column(nullable = false)
-    private Date eventTime;
-
-    @NotNull(message = "Event type cannot be null")
-    @Size(min = 2, max = 100, message = "Event type must be between 2 and 100 characters")
+    @NotNull(message = "Notification type cannot be null")
+    @Size(min = 2, max = 500, message = "Notification type must be between 2 and 500 characters")
     @Column(nullable = false)
     private String eventType;
 
@@ -31,10 +26,10 @@ public class Notification {
     @Column(nullable = false)
     private String details;
 
-    @NotNull(message = "Status cannot be null")
-    @Size(min = 2, max = 50, message = "Status must be between 2 and 50 characters")
+    @NotNull(message = "Notification time cannot be null")
+    @PastOrPresent(message = "Notification time must be in the past or present")
     @Column(nullable = false)
-    private String status;
+    private Date notificationTime;
 
     @ManyToOne
     @JoinColumn(name = "materialID")
