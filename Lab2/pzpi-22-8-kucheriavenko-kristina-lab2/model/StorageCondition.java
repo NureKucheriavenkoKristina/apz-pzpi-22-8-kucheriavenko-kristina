@@ -1,5 +1,7 @@
 package com.BiologicalMaterialsSystem.model;
 
+import com.BiologicalMaterialsSystem.enums.StorageZone;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
@@ -38,6 +40,11 @@ public class StorageCondition {
     @PastOrPresent(message = "Measurement time must be in the past or present")
     @Column(nullable = false)
     private Date measurementTime;
+
+    @Enumerated(EnumType.STRING)
+    @JsonProperty("storage_zone")
+    @Column(nullable = false)
+    private StorageZone zone;
 
     @ManyToOne
     @JoinColumn(name = "materialID")
