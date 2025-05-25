@@ -7,7 +7,7 @@ const Navigation = () => {
     const { t, i18n } = useTranslation();
 
     const toggleLanguage = () => {
-        const newLang = i18n.language === "uk" ? "en" : "uk";
+        const newLang = i18n.language === "ua" ? "en" : "ua";
         i18n.changeLanguage(newLang);
     };
 
@@ -22,7 +22,7 @@ const Navigation = () => {
                 ) : (
                     <>
                         <li>  <button onClick={toggleLanguage} className="bg-emerald-100 text-emerald-800 px-4 py-1 rounded">
-                            {i18n.language === "uk" ? "EN" : "UK"}
+                            {i18n.language === "uk" ? "EN" : "UA"}
                         </button></li>
                         <li><Link to="/biological-materials">{t("biologicalMaterials")}</Link></li>
                         <li><Link to="/donors">{t("donors")}</Link></li>
