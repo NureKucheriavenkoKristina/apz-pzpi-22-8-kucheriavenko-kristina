@@ -31,7 +31,7 @@ API забезпечує функціональність для управлі�
 
 Виконати клонування репозиторію на локальний комп'ютер:
 
-git clone [https://github.com/NureKucheriavenkoKristina/arkpz-pzpi-22-8-kucheriavenko-kristina/tree/22bef0682379c628666cd4cd298504c8a114fb73/Task5/arkpz-pzpi-22-8-kucheriavenko-kristina-task5](https://github.com/NureKucheriavenkoKristina/apz-pzpi-22-8-kucheriavenko-kristina/tree/main/Lab5/pzpi-22-8-kucheriavenko-kristina-lab5)
+git clone https://github.com/NureKucheriavenkoKristina/apz-pzpi-22-8-kucheriavenko-kristina/tree/main/Lab5/pzpi-22-8-kucheriavenko-kristina-lab5
 
 ### Крок 2: Створення бази даних
 
