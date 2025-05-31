@@ -1,0 +1,13 @@
+# Wokwi Library List
+# See https://docs.wokwi.com/guides/libraries
+
+DHT sensor library for ESPx
+ESPAsyncWebServer
+ArduinoJson
+WiFiWebServer
+SimpleWiFiClient
+AwsIotWiFiClient
+PubSubClient
+NTPClient
+NtpClientLib
+EasyNTPClient
