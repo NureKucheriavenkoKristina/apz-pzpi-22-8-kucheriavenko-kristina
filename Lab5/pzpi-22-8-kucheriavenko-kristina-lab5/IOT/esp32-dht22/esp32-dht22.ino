@@ -10,16 +10,16 @@
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "pool.ntp.org", 2, 60000);
 
-const char* MQTT_SERVER = "broker.emqx.io"; 
-const int MQTT_PORT = 1883;
-const char* MQTT_USER = "";
-const char* MQTT_PASSWORD = "";
+char* MQTT_SERVER = "broker.emqx.io"; 
+int MQTT_PORT = 1883;
+char* MQTT_USER = "";
+char* MQTT_PASSWORD = "";
 
-const int DHT_PIN = 15;
-const int POT_PIN = 34;
-const int LED1 = 26;
-const int LED2 = 27;
-const int materialID = 1;
+int DHT_PIN = 15;
+int POT_PIN = 34;
+int LED1 = 26;
+int LED2 = 27;
+int materialID = 1;
 
 DHTesp dhtSensor;
 WiFiClient espClient;
@@ -27,25 +27,23 @@ PubSubClient client(espClient);
 
 void connectToWiFi() {
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD, WIFI_CHANNEL);
-  Serial.print("Connecting to WiFi ");
+  Serial.print("Під'єднання до WiFi ");
   while (WiFi.status() != WL_CONNECTED) {
     delay(100);
     Serial.print(".");
   }
-  Serial.println(" Connected!");
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
+  Serial.println("Підключено!");
 }
 
 void connectToMQTT() {
   while (!client.connected()) {
-    Serial.print("Connecting to MQTT broker...");
+    Serial.print("Підключення до брокера MQTT...");
     if (client.connect("ESP32Client", MQTT_USER, MQTT_PASSWORD)) {
-      Serial.println(" Connected!");
+      Serial.println(" Підключено!");
     } else {
-      Serial.print(" Failed, rc=");
+      Serial.print("Не вдалося, код помилки: ");
       Serial.print(client.state());
-      Serial.println(" Trying again in 5 seconds...");
+      Serial.println(" Спроба ще раз через 5 секунд...");
       delay(5000);
     }
   }
@@ -62,6 +60,7 @@ void setup() {
 }
 
 void loop() {
+
   if (!client.connected()) {
     connectToMQTT();
   }
@@ -88,10 +87,10 @@ void loop() {
   int potValue = analogRead(POT_PIN);
   float oxygenLevel = map(potValue, 0, 4095, 0, 100);
 
-  Serial.println("Temp: " + temperature + "°C");
-  Serial.println("Humidity: " + humidity + "%");
-  Serial.println("Oxygen Level: " + String(oxygenLevel, 1) + "%");
-  Serial.println("Time: " + timestamp);
+  Serial.println("Температура: " + temperature + "°C");
+  Serial.println("Вологість: " + humidity + "%");
+  Serial.println("Рівень кисню: " + String(oxygenLevel, 1) + "%");
+  Serial.println("Час: " + timestamp);
   Serial.println("---");
 
   String jsonData = "{";
@@ -102,12 +101,12 @@ void loop() {
   jsonData += "\"oxygenLevel\": " + String(oxygenLevel, 1);
   jsonData += "}";
 
-  Serial.println("JSON Data: " + jsonData);
+  Serial.println("JSON: " + jsonData);
 
   if (client.publish("storage-conditions", jsonData.c_str(), true)) {
-    Serial.println("Data published successfully with retain");
+    Serial.println("Дані успішно опубліковано");
   } else {
-    Serial.println("Failed to publish data");
+    Serial.println("Не вдалося опублікувати дані");
   }
 
   delay(5000);
